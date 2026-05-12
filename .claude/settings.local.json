@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "WebFetch(domain:www.qiniu.com)",
+      "WebFetch(domain:developer.qiniu.com)",
+      "Bash(rtk ls *)",
+      "Bash(dir D:\\\\workspace\\\\02_LearnChineseByMusic *)",
+      "Bash(dir D:\\\\workspace\\\\02_LearnChineseByMusic\\\\docs *)",
+      "Bash(rtk find *)",
+      "Bash(rtk pip *)",
+      "Bash(where python *)",
+      "Bash(where python3 *)",
+      "Bash(\"D:/Program Files \\(x86\\)/Python313/python.exe\" -m pip install -r requirements.txt)",
+      "Bash(\"D:/Program Files \\(x86\\)/Python313/python.exe\" seed.py)",
+      "Bash(\"D:/Program Files \\(x86\\)/Python313/python.exe\" -m uvicorn main:app --host 0.0.0.0 --port 3000)",
+      "Bash(rtk curl *)",
+      "Bash(flutter create *)",
+      "Bash(flutter pub *)",
+      "Bash(flutter analyze *)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill *)"
+    ]
+  }
+}
