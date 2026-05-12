@@ -16,6 +16,10 @@ class AudioService {
     await _player.setUrl(url);
   }
 
+  Future<void> setLocalFile(String filePath) async {
+    await _player.setFilePath(filePath);
+  }
+
   Future<void> play() => _player.play();
 
   Future<void> pause() => _player.pause();
