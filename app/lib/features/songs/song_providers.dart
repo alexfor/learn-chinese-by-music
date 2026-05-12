@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/song.dart';
 import '../../services/api_service.dart';
 
-final apiProvider = Provider<ApiService>((ref) => ApiService());
-
 class SongFilter {
   final String? style;
   final double? difficultyMin;
