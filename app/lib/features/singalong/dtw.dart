@@ -47,9 +47,11 @@ double _pitchDistance(double? a, double? b) {
   if (a == null || b == null) return _unvoicedPenalty;
 
   // Use cent difference: more perceptually meaningful than Hz difference
-  if (a! <= 0 || b! <= 0) return _unvoicedPenalty;
+  final aVal = a;
+  final bVal = b;
+  if (aVal <= 0 || bVal <= 0) return _unvoicedPenalty;
 
-  final cents = 1200 * (log(b / a) / ln2).abs();
+  final cents = 1200 * (log(bVal / aVal) / ln2).abs();
   // Normalize: 1200 cents (one octave) = max distance of 1.0
   return (cents / 1200).clamp(0.0, _maxPitchDistance);
 }

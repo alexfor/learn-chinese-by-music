@@ -43,10 +43,8 @@ List<Complex> ifft(List<Complex> input) {
 
   // Conjugate, FFT, conjugate, divide by N
   final conjugated = input.map((c) => Complex(c.real, -c.imaginary)).toList();
-  final paddedReals = conjugated.map((c) => c.real).toList();
 
-  // Need to handle the FFT of real parts — use a custom approach
-  // Actually, do FFT on the conjugated complex values directly
+  // Do FFT on the conjugated complex values directly
   final result = _fftComplex(conjugated);
   return result
       .map((c) => Complex(c.real / n, -c.imaginary / n))

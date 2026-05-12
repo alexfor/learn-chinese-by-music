@@ -1,5 +1,3 @@
-import 'dart:math';
-
 /// YIN pitch detection algorithm.
 ///
 /// Returns the detected fundamental frequency in Hz, or null if the
