@@ -46,5 +46,5 @@ final authServiceProvider = Provider<AuthService>((ref) {
   // Wire up 401 → clear auth
   api.setOnUnauthorized(() => authNotifier.clearAuth());
 
-  return AuthService(api: api, authNotifier: authNotifier);
+  return AuthService(api: api, authNotifier: authNotifier, ref: ref);
 });

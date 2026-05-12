@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'api_service.dart';
 import '../features/auth/auth_controller.dart';
@@ -6,15 +6,18 @@ import '../features/auth/auth_controller.dart';
 class AuthService {
   final ApiService _api;
   final AuthNotifier _authNotifier;
+  final Ref _ref;
 
   AuthService({
     required ApiService api,
     required AuthNotifier authNotifier,
+    required Ref ref,
   })  : _api = api,
-        _authNotifier = authNotifier;
+        _authNotifier = authNotifier,
+        _ref = ref;
 
-  bool get isAuthenticated => _authNotifier.state.isAuthenticated;
-  String? get token => _authNotifier.state.token;
+  bool get isAuthenticated => _ref.read(authStateProvider).isAuthenticated;
+  String? get token => _ref.read(authStateProvider).token;
 
   /// Authenticate with a provider identity token.
   /// Calls backend POST /api/auth/login.
