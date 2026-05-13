@@ -1,11 +1,13 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from database import get_db
-from models.user import LoginRequest, LoginResponse
+from models.user import LoginRequest, LoginResponse, RefreshRequest, RefreshResponse
 from services.auth_service import (
     AppleTokenValidator,
     GoogleTokenValidator,
     create_jwt,
+    create_refresh_token,
     generate_user_id,
+    verify_jwt,
 )
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -57,6 +59,22 @@ async def login(req: LoginRequest):
             await db.commit()
 
         token = create_jwt(user_id=user_id, provider=provider)
-        return LoginResponse(token=token, user_id=user_id)
+        refresh_token = create_refresh_token(user_id=user_id, provider=provider)
+        return LoginResponse(token=token, user_id=user_id, refresh_token=refresh_token)
     finally:
         await db.close()
+
+
+@router.post("/refresh", response_model=RefreshResponse)
+async def refresh_token(req: RefreshRequest):
+    payload = verify_jwt(req.refresh_token)
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired refresh token",
+        )
+
+    user_id = payload["user_id"]
+    provider = payload.get("auth_provider", "")
+    new_token = create_jwt(user_id=user_id, provider=provider)
+    return RefreshResponse(token=new_token, user_id=user_id)

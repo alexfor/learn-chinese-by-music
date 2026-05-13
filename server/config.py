@@ -9,6 +9,12 @@ class Settings(BaseSettings):
     secret_key: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60 * 24 * 7  # 7 days
+    jwt_refresh_expire_minutes: int = 60 * 24 * 30  # 30 days
+
+    # Apple Sign-In
+    apple_bundle_id: str = ""
+    # Google Sign-In
+    google_client_id: str = ""
 
     # Qiniu (China)
     qiniu_access_key: str = ""
@@ -24,6 +30,13 @@ class Settings(BaseSettings):
     r2_domain: str = ""
 
     model_config = {"env_file": ".env", "env_prefix": "APP_"}
+
+    def model_post_init(self, __context):
+        if self.secret_key == "change-me-in-production" and not self.debug:
+            import warnings
+            warnings.warn(
+                "SECURITY: Using default secret_key. Set APP_SECRET_KEY in .env for production."
+            )
 
 
 settings = Settings()

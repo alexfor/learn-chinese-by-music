@@ -9,15 +9,21 @@ from jose.constants import Algorithms
 from config import settings
 
 
-def create_jwt(user_id: str, provider: str) -> str:
+def create_jwt(user_id: str, provider: str, expires_minutes: int | None = None) -> str:
     now = datetime.now(timezone.utc)
+    expire_minutes = expires_minutes if expires_minutes is not None else settings.jwt_expire_minutes
     payload = {
         "user_id": user_id,
         "auth_provider": provider,
         "iat": now,
-        "exp": now + timedelta(minutes=settings.jwt_expire_minutes),
+        "exp": now + timedelta(minutes=expire_minutes),
     }
     return jwt.encode(payload, settings.secret_key, algorithm=Algorithms.HS256)
+
+
+def create_refresh_token(user_id: str, provider: str) -> str:
+    """Create a longer-lived refresh token."""
+    return create_jwt(user_id, provider, expires_minutes=settings.jwt_refresh_expire_minutes)
 
 
 def verify_jwt(token: str) -> Optional[dict]:
@@ -45,11 +51,12 @@ class AppleTokenValidator:
                 keys = resp.json()
 
             # Decode and verify the token
+            audience = settings.apple_bundle_id or settings.app_name
             payload = jwt.decode(
                 identity_token,
                 keys,
                 algorithms=[Algorithms.RS256],
-                audience=settings.app_name,
+                audience=audience,
                 issuer="https://appleid.apple.com",
             )
             return payload
@@ -74,11 +81,12 @@ class GoogleTokenValidator:
                 keys = resp.json()
 
             # Decode and verify the token
+            audience = settings.google_client_id or settings.app_name
             payload = jwt.decode(
                 id_token,
                 keys,
                 algorithms=[Algorithms.RS256],
-                audience=settings.app_name,
+                audience=audience,
                 issuer="https://accounts.google.com",
             )
             return payload

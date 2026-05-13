@@ -1,14 +1,15 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from uuid import uuid4
 
 from models.song import SongCreate, SongUpdate
+from middleware.auth import require_admin
 from services.song_service import create_song, update_song, delete_song, get_song
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 
 @router.post("/songs")
-async def admin_create_song(data: SongCreate):
+async def admin_create_song(data: SongCreate, _=Depends(require_admin)):
     song_id = data.id or str(uuid4())
     song_dict = data.model_dump()
     song_dict["id"] = song_id
@@ -20,7 +21,7 @@ async def admin_create_song(data: SongCreate):
 
 
 @router.put("/songs/{song_id}")
-async def admin_update_song(song_id: str, data: SongUpdate):
+async def admin_update_song(song_id: str, data: SongUpdate, _=Depends(require_admin)):
     update_dict = data.model_dump(exclude_none=True)
     if update_dict.get("lyric_json") and not isinstance(update_dict["lyric_json"], str):
         import json
@@ -32,7 +33,7 @@ async def admin_update_song(song_id: str, data: SongUpdate):
 
 
 @router.delete("/songs/{song_id}")
-async def admin_delete_song(song_id: str):
+async def admin_delete_song(song_id: str, _=Depends(require_admin)):
     ok = await delete_song(song_id)
     if not ok:
         return {"error": "Song not found"}
@@ -40,7 +41,7 @@ async def admin_delete_song(song_id: str):
 
 
 @router.patch("/songs/{song_id}/status")
-async def admin_update_status(song_id: str, status: str = Query(...)):
+async def admin_update_status(song_id: str, status: str = Query(...), _=Depends(require_admin)):
     ok = await update_song(song_id, {"status": status})
     if not ok:
         return {"error": "Song not found"}

@@ -3,8 +3,10 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional
 
 from services.auth_service import verify_jwt
+from database import get_db
 
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 
 async def get_current_user_id(
@@ -26,8 +28,26 @@ async def get_current_user_id(
     return payload["user_id"]
 
 
+async def require_admin(
+    user_id: str = Depends(get_current_user_id),
+) -> str:
+    db = await get_db()
+    try:
+        row = await db.execute_fetchall(
+            "SELECT role FROM users WHERE id = ?", (user_id,),
+        )
+        if not row or row[0]["role"] != "admin":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required",
+            )
+        return user_id
+    finally:
+        await db.close()
+
+
 async def optional_user_id(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(optional_security),
 ) -> Optional[str]:
     if credentials is None:
         return None

@@ -1,4 +1,4 @@
-package com.learnchinesebymusic.learn_chinese_by_music
+package com.xginfo.learnchinesebymusic
 
 import io.flutter.embedding.android.FlutterActivity
 

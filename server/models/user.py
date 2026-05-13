@@ -10,6 +10,16 @@ class LoginRequest(BaseModel):
 class LoginResponse(BaseModel):
     token: str
     user_id: str
+    refresh_token: str = ""
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+class RefreshResponse(BaseModel):
+    token: str
+    user_id: str
 
 
 class UserResponse(BaseModel):

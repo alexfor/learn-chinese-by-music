@@ -107,6 +107,20 @@ class _SongDetailContent extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push(
+                    '/songs/${song.id}/leaderboard?title=${Uri.encodeComponent(song.title)}',
+                  ),
+                  icon: const Icon(Icons.leaderboard),
+                  label: const Text('Leaderboard'),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
 
           // Lyrics with pinyin

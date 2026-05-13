@@ -20,5 +20,13 @@ async def init_db():
     db = await get_db()
     try:
         await db.executescript(schema_sql)
+        # Migration: add columns that may not exist in older databases
+        for migration in (
+            "ALTER TABLE songs ADD COLUMN access_level TEXT DEFAULT 'free'",
+        ):
+            try:
+                await db.execute(migration)
+            except Exception:
+                pass  # Column already exists
     finally:
         await db.close()

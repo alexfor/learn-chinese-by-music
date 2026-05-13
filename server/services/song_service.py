@@ -36,7 +36,7 @@ async def list_songs(
         offset = (page - 1) * page_size
         params.extend([page_size, offset])
         cursor = await db.execute(
-            f"SELECT id, title, style, difficulty, status FROM songs WHERE {where} ORDER BY difficulty ASC, created_at DESC LIMIT ? OFFSET ?",
+            f"SELECT id, title, style, difficulty, status, access_level FROM songs WHERE {where} ORDER BY difficulty ASC, created_at DESC LIMIT ? OFFSET ?",
             params,
         )
         rows = await cursor.fetchall()

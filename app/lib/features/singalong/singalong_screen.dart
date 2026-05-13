@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../shared/lrc_parser.dart';
+import '../../services/api_service.dart';
 import '../../models/song.dart';
 import '../songs/song_providers.dart';
 import '../player/player_controller.dart';
@@ -59,6 +60,20 @@ class _SingalongScreenState extends ConsumerState<SingalongScreen> {
   Future<void> _handleStop() async {
     final pipeline = ref.read(singalongPipelineProvider);
     await pipeline.stop();
+
+    // Submit score to leaderboard
+    try {
+      final api = ref.read(apiProvider);
+      final sentenceScores = pipeline.lineScores.map((s) => s.score.toDouble()).toList();
+      await api.post('/api/leaderboard/submit', data: {
+        'song_id': widget.songId,
+        'best_score': pipeline.totalScore.toDouble(),
+        'sentence_scores': sentenceScores,
+      });
+    } catch (_) {
+      // Non-blocking — don't interrupt the user's flow
+    }
+
     setState(() => _localState = SingalongState.completed);
   }
 

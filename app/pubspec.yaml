@@ -21,7 +21,7 @@ dependencies:
   # Audio
   just_audio: ^0.9.42
   audio_session: ^0.1.25
-  record: ^5.2.1
+  record: ^6.2.0
 
   # Local storage
   sqflite: ^2.4.1

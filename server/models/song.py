@@ -52,6 +52,8 @@ class SongListItem(BaseModel):
     style: str
     difficulty: float
     status: str
+    access_level: str = "free"
+    locked: bool = False
 
 
 class SongResponse(BaseModel):
@@ -59,6 +61,7 @@ class SongResponse(BaseModel):
     title: str
     style: str
     difficulty: float
+    access_level: str = "free"
     lyric_json: Optional[str] = None
     lrc: Optional[str] = None
     vocal_url: Optional[str] = None
